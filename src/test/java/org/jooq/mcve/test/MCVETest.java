@@ -37,48 +37,21 @@
  */
 package org.jooq.mcve.test;
 
-import static org.jooq.mcve.Tables.TEST;
-import static org.junit.Assert.assertEquals;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-
-import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
-import org.jooq.mcve.tables.records.TestRecord;
-
-import org.junit.After;
-import org.junit.Before;
+import org.jooq.mcve.Public;
+import org.jooq.mcve.tables.CycleTable;
 import org.junit.Test;
 
 public class MCVETest {
 
-    Connection connection;
-    DSLContext ctx;
+  @Test
+  public void mcveTest() {
+    Thread tableInitThread =
+            new Thread(
+                    () -> {
+                      CycleTable.CYCLE_TABLE.toString();
+                    });
 
-    @Before
-    public void setup() throws Exception {
-        connection = DriverManager.getConnection("jdbc:h2:~/mcve", "sa", "");
-        ctx = DSL.using(connection);
-    }
-
-    @After
-    public void after() throws Exception {
-        ctx = null;
-        connection.close();
-        connection = null;
-    }
-
-    @Test
-    public void mcveTest() {
-        TestRecord result =
-        ctx.insertInto(TEST)
-           .columns(TEST.VALUE)
-           .values(42)
-           .returning(TEST.ID)
-           .fetchOne();
-
-        result.refresh();
-        assertEquals(42, (int) result.getValue());
-    }
+    tableInitThread.start();
+    Public.PUBLIC.toString();
+  }
 }

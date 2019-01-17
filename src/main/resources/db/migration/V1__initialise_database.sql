@@ -1,10 +1,8 @@
-DROP SCHEMA mcve IF EXISTS CASCADE;
+CREATE TYPE cycle_record AS (
+  field VARCHAR
+);
 
-CREATE SCHEMA mcve;
-
-CREATE TABLE mcve.test (
-  id    INT NOT NULL AUTO_INCREMENT,
-  value INT,
-  
-  CONSTRAINT pk_test PRIMARY KEY (id) 
+CREATE TABLE cycle_table (
+  id INTEGER PRIMARY KEY,
+  cycle_record_col cycle_record
 );
